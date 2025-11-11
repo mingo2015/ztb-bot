@@ -1,0 +1,22 @@
+name: 每日涨停推送
+
+on:
+  schedule:
+    - cron: '10 7 * * 1-5'  # 北京 15:10 = 美西 23:10 前一天
+  workflow_dispatch:      # 允许手动触发
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: 设置 Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: 安装依赖
+        run: pip install akshare requests
+      - name: 运行脚本
+        env:
+          PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+        run: python ztb_auto.py
